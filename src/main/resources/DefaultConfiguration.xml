@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RandomWalker>
+	
+	<InitialPosition>
+		<Latitude>51.43071620000001</Latitude>
+		<Longitude>5.4569569999999885</Longitude>
+	</InitialPosition>
+	
+	<DefaultSpeed>1.4</DefaultSpeed>
+	
+	<OpenStreetMap>
+
+		<!-- The tile size in degrees -->
+		<TileSize>0.1</TileSize>
+
+		<!-- Overpass URL -->
+		<OverpassURL>http://www.overpass-api.de/api/interpreter</OverpassURL>
+		
+		<HighwayTagValues>
+			<Value>bridleway</Value>
+			<Value>cycleway</Value>
+			<Value>footway</Value>
+			<Value>path</Value>
+			<Value>pedestrian</Value>
+			<Value>residential</Value>
+			<Value>track</Value>
+			<Value>unclassified</Value>
+			<Value>steps</Value>
+			<Value>trunk</Value>
+			<Value>primary</Value>
+			<Value>secondary</Value>
+			<Value>tertiary</Value>
+		</HighwayTagValues>
+	</OpenStreetMap>
+
+</RandomWalker>
