@@ -2,6 +2,7 @@ package com.basdado.randomwalker.controller;
 
 import java.util.Deque;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -24,7 +25,7 @@ public class RandomWalkHeuristic implements WalkHeuristic {
 		int backupOptionRating = Integer.MAX_VALUE; // lower is better
 		
 		for (Long option : connections.keySet()) {
-			int optionRating = indexOf(nodeHistory, option);
+			int optionRating = lastIndexOf(nodeHistory, option);
 			if (optionRating >= 0) {
 				if (optionRating < backupOptionRating) {
 					backupOption = option;
@@ -37,9 +38,9 @@ public class RandomWalkHeuristic implements WalkHeuristic {
 		
 		if (!options.isEmpty()) {
 			int i = 0;
-			int nodeIdx = rnd.nextInt(connections.size());
+			int nodeIdx = rnd.nextInt(options.size());
 			
-			for (Long nodeId: connections.keySet()) {
+			for (Long nodeId: options) {
 				if (i == nodeIdx) {
 					return nodeId;
 				}
@@ -52,13 +53,14 @@ public class RandomWalkHeuristic implements WalkHeuristic {
 		
 	}
 
-	private static <T> int indexOf(Deque<T> entries, T value) {
-		int i = 0;
-		for (T entry : entries) {
+	private static <T> int lastIndexOf(Deque<T> entries, T value) {
+		int i = entries.size() - 1;
+		for (Iterator<T> entryIterator = entries.descendingIterator(); entryIterator.hasNext();) {
+			T entry = entryIterator.next();
 			if (entry != null && entry.equals(value)) {
 				return i;
 			}
-			i++;
+			i--;
 		}
 		return -1;
 	}
