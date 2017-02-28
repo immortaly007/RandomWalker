@@ -67,7 +67,7 @@ public class RandomWalkerController {
 	}
 	
 	private void updateWalker(RandomWalkerData randomWalker) {
-		// So it can walk for approximately 292 years before we wraps around the long
+		// Using nanos, but it can walk for approximately 292 years before the long overflows
 		long ageNanos = randomWalker.getCreated().until(LocalDateTime.now(), ChronoUnit.NANOS);
 		double currentAge = (double)ageNanos / NANOS_PER_SECOND;
 		double lastUpdateAge = randomWalker.getLastUpdateAge();
@@ -80,8 +80,9 @@ public class RandomWalkerController {
 			
 			ReadOnlyRoadMapNode previousNode = roadMap.getNode(randomWalker.getPreviousNodeId());
 			
-			// Previous and next node are always connected, so we can use that information
-			double nextNodeDistance = (1 - randomWalker.getNodeProgress()) * previousNode.getDistanceToConnectedNode(randomWalker.getNextNodeId());
+			// Previous and next node are always connected, so we can use precalculated distances in the roadmap
+			double currentSegmentDistance = previousNode.getDistanceToConnectedNode(randomWalker.getNextNodeId());
+			double nextNodeDistance = (1.0 - randomWalker.getNodeProgress()) * currentSegmentDistance;
 			if (nextNodeDistance < movementDistance) {
 				
 				long nextNodeId = heuristic.decideNextNode(randomWalker.getNextNodeId(), roadMap, randomWalker.getNodeHistory());
@@ -90,14 +91,12 @@ public class RandomWalkerController {
 				roadMapController.loadTilesAround(nextNode.getPosition());
 								
 			} else {
-				double nodeProgress = randomWalker.getNodeProgress() + (movementDistance / nextNodeDistance);
+				double nodeProgress = randomWalker.getNodeProgress() + (movementDistance / currentSegmentDistance);
 				randomWalker.setNodeProgress(nodeProgress);
 			}
 			
-			movementDistance -= nextNodeDistance;
-			
+			movementDistance -= nextNodeDistance;	
 		}
-		
 		
 		randomWalker.setLastUpdateAge(currentAge);
 	
